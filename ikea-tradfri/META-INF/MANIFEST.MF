@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Executable: devicetypes/edvaldeysteinsson/ikea-tradfri.src
+
+Name: ikea-tradfri.groovy
+SHA1-Digest: 84ac36b64f12395caf13f111a71ab6838e9286f1

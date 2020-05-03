@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Executable: devicetypes/edvaldeysteinsson/ikea-tradfri-mono-color.src
+
+Name: ikea-tradfri-mono-color.groovy
+SHA1-Digest: d4091f9cd4351c543d5017d47f26a6ead32160be

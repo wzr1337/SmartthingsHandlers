@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Executable: devicetypes/fibarogroup/fibaro-wall-plug-zw5.src
+
+Name: fibaro-wall-plug-zw5.groovy
+SHA1-Digest: bda2e55843c20b0cc8734f1a17c2c7d6666e0d10

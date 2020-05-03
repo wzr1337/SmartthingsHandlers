@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Executable: devicetypes/fibarogroup/fibaro-fgr-222.src
+
+Name: fibaro-fgr-222.groovy
+SHA1-Digest: e0761979809a674c44022bff47d1fbb727100e24
