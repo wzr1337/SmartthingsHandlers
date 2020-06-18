@@ -16,64 +16,73 @@
  *
  */
 metadata {
-	definition (name: "Fibaro Wall Plug ZW5", namespace: "FibaroGroup", author: "Patrick Bartsch") {
-		capability "Switch"
-		capability "Energy Meter"
-		capability "Power Meter"
-		capability "Configuration"
-		capability "Health Check"
-        
-        capability "Sensor"
-        capability "Actuator"
+  definition (name: "Fibaro Wall Plug ZW5", namespace: "FibaroGroup", author: "Patrick Bartsch") {
 
-        capability "Polling"
-        capability "Refresh"
+    capability "Sensor"
+    capability "Actuator"
 
-		command "reset"
-		command "refresh"
+    capability "Switch"
 
-		fingerprint deviceId: "0x1001", inClusters:"0x5E,0x22,0x59,0x56,0x7A,0x32,0x71,0x73,0x98,0x31,0x85,0x70,0x72,0x5A,0x8E,0x25,0x86"
-		fingerprint deviceId: "0x1001", inClusters:"0x5E,0x22,0x59,0x56,0x7A,0x32,0x71,0x73,0x31,0x85,0x70,0x72,0x5A,0x8E,0x25,0x86"
-	}
+    capability "Polling"
+    capability "Power Meter"
+    capability "Energy Meter"
+    capability "Refresh"
+    capability "Configuration"
+    capability "Health Check"
+    
 
-	tiles (scale: 2) {
-		multiAttributeTile(name:"switch", type: "lighting", width: 3, height: 4, canChangeIcon: true){
-			tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
-				attributeState "off", label: 'Off', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState:"turningOn"
-				attributeState "on", label: 'On', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#00a0dc", nextState:"turningOff"
-				attributeState "turningOn", label:'Turning On', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#00a0dc", nextState:"turningOff"
-				attributeState "turningOff", label:'Turning Off', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#ffffff", nextState:"turningOn"
-			}
-			tileAttribute("device.combinedMeter", key:"SECONDARY_CONTROL") {
-				attributeState("combinedMeter", label:'${currentValue}')
-			} 
-		}
-		valueTile("power", "device.power", decoration: "flat", width: 2, height: 2) {
-			state "power", label:'${currentValue}\nW', action:"refresh"
-		}
-		valueTile("energy", "device.energy", decoration: "flat", width: 2, height: 2) {
-			state "energy", label:'${currentValue}\nkWh', action:"refresh"
-		}
-		valueTile("reset", "device.energy", decoration: "flat", width: 2, height: 2) {
-			state "reset", label:'reset\nkWh', action:"reset"
-		}
-	}
+    command "reset"
+    command "refresh"
 
-	preferences {
-		input ( name: "logging", title: "Logging", type: "boolean", required: false )
-		parameterMap().each {
-			input (
-				name: it.key,
-				title: "${it.num}. ${it.title}",
-				description: it.descr,
-				type: it.type,
-				options: it.options,
-				range: (it.min != null && it.max != null) ? "${it.min}..${it.max}" : null,
-				defaultValue: it.def,
-				required: false
-			)
-		}
-	}
+    fingerprint deviceId: "0x1001", inClusters:"0x5E,0x22,0x59,0x56,0x7A,0x32,0x71,0x73,0x98,0x31,0x85,0x70,0x72,0x5A,0x8E,0x25,0x86"
+    fingerprint deviceId: "0x1001", inClusters:"0x5E,0x22,0x59,0x56,0x7A,0x32,0x71,0x73,0x31,0x85,0x70,0x72,0x5A,0x8E,0x25,0x86"
+
+    attribute "syncStatus", "enum", ["syncing", "synced"]
+  }
+
+  tiles (scale: 2) {
+    multiAttributeTile(name:"switch", width: 3, height: 4, canChangeIcon: true){
+      tileAttribute ("device.switch", key: "PRIMARY_CONTROL") {
+        attributeState "off", label: 'Off', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff", nextState:"turningOn"
+        attributeState "on", label: 'On', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#27b500", nextState:"turningOff"
+        attributeState "turningOn", label:'Turning On', action:"switch.off", icon:"st.switches.switch.on", backgroundColor:"#27b500", nextState:"turningOff"
+        attributeState "turningOff", label:'Turning Off', action:"switch.on", icon:"st.switches.switch.off", backgroundColor:"#ffffff", nextState:"turningOn"
+      }
+      tileAttribute("device.combinedMeter", key:"SECONDARY_CONTROL") {
+        attributeState("combinedMeter", label:'${currentValue}')
+      } 
+    }
+    valueTile("power", "device.power", width: 2, height: 2) {
+      state "default", label:'${currentValue} W', action:"refresh"
+    }
+    valueTile("energy", "device.energy", width: 2, height: 2) {
+      state "default", label:'${currentValue} kWh', action:"refresh"
+    }
+    standardTile("reset", "device.reset", decoration: "flat", width: 2, height: 2) {
+      state "default", label:'Reset', action:"reset", icon:"st.secondary.reset-icon"
+    }
+    standardTile("refresh", "device.switch", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+      state "default", label:"Refresh", action:"refresh", icon:"st.secondary.refresh-icon"
+    }
+    main(["switch"])
+    details(["switch", "power", "energy", "refresh", "reset"])
+  }
+
+  preferences {
+    input ( name: "logging", title: "Logging", type: "boolean", required: false )
+    parameterMap().each {
+      input (
+        name: it.key,
+        title: "${it.num}. ${it.title}",
+        description: it.descr,
+        type: it.type,
+        options: it.options,
+        range: (it.min != null && it.max != null) ? "${it.min}..${it.max}" : null,
+        defaultValue: it.def,
+        required: false
+      )
+    }
+  }
 }
 
 //UI and tile functions
@@ -94,6 +103,16 @@ def reset() {
 }
 
 def refresh() {
+    logging("${device.displayName} Refreshing","info")
+	def cmds = []
+	cmds << zwave.meterV3.meterGet(scale: 0)
+	cmds << zwave.meterV3.meterGet(scale: 2)
+	cmds << zwave.sensorMultilevelV5.sensorMultilevelGet(sensorType: 4)
+	encapSequence(cmds,1000)
+}
+
+def poll() {
+    logging("${device.displayName} Polling","info")
 	def cmds = []
 	cmds << zwave.meterV3.meterGet(scale: 0)
 	cmds << zwave.meterV3.meterGet(scale: 2)
@@ -382,11 +401,11 @@ private parameterMap() {[
 
 def sendEventToFirestore(data) {
 	
-    def key = "<yourKey>"
-	  def collection = "consumptions"
-    def project_id = "<id>"
+    def key = ""
+    def collection = ""
+    def project_id = ""
 
-	def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone('UTC'))
+    def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone('UTC'))
     
     
     // only send every minute
@@ -468,6 +487,7 @@ def sendEventToFirestore(data) {
             log.debug "[sendEventToFirestore] (POST FIREBASE): response status: ${resp.status}"
         }
     } catch (e) {
+        log.error "[sendEventToFirestore]"
         log.error "HTTP error: $e"
         log.error "HTTP status code: ${e.getResponse().getStatus()}"
         log.error "HTTP message body: ${new groovy.json.JsonBuilder(e.getResponse().getData()).toString()}"
@@ -476,7 +496,7 @@ def sendEventToFirestore(data) {
 
 def tweet(data) {
 
-	def key = "<TwitterAPIKey>"
+	def key = "<twitterAPIKey>"
 
 	def sendData= [
     	"iam": data.iam
@@ -497,9 +517,10 @@ def tweet(data) {
               //log.debug "${it.name} : ${it.value}"
             }
             // log.debug "response data: ${resp.data}"
-            log.debug "[sendEventToFirestore] (POST Twitter): response contentType: ${resp.contentType}"
+            log.debug "[tweet] (POST Twitter): response contentType: ${resp.contentType}"
         }
     } catch (e) {
+    	log.error "[tweet]"
         log.error "HTTP error: $e"
         log.error "HTTP status code: ${e.getResponse().getStatus()}"
         log.error "HTTP message body: ${new groovy.json.JsonBuilder(e.getResponse().getData()).toString()}"
