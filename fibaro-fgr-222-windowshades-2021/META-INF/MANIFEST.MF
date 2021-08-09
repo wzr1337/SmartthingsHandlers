@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Executable: devicetypes/fibarogroup/fibaro-fgr-222-windowshades-2021.src
+
+Name: fibaro-fgr-222.groovy
+SHA1-Digest: 2ce984360df8b51dd332c105f6d1b6b75ebcb597
